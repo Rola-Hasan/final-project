@@ -1,0 +1,178 @@
+{% load static %}
+<style>
+    .custom-bg-medical {
+
+        background-color: rgba(4, 116, 228, 0.85);
+        /* Matches logo color with slight transparency */
+        backdrop-filter: blur(5px);
+        /* Optional frosted-glass effect */
+        color: #ffffff;
+        /* Ensures text is readable on the blue background */
+
+
+    }
+</style>
+
+<ul class="navbar-nav custom-bg-medical sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <!-- <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+        <div class="sidebar-brand-icon ">
+            <img src="{% static 'img/logo2.png' %}" alt="" width="80px">
+        </div>
+        <div class="sidebar-brand-text mx-3">FinDoc</div>
+    </a> -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-start" style="margin-right: 50px; "
+        href="{% url 'home' %}">
+        <div class="sidebar-brand-icon">
+            <img src="{% static 'img/logo2.png' %}" alt="FinDoc Logo" width="55px" class="rounded-circle"
+                style="border: 2px solid #ffffff; padding: 5px;">
+        </div>
+        <div class="sidebar-brand-text mx-3">FinDoc</div>
+    </a>
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+
+
+    <!-- Divider -->
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+            aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>الإعدادات</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Components:</h6>
+                <a class="collapse-item" href="buttons.html">Buttons</a>
+                <a class="collapse-item" href="cards.html">Cards</a>
+            </div>
+        </div>
+    </li> -->
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDoctors"
+            aria-expanded="true" aria-controls="collapseDoctors">
+            <i class="fas fa-fw fa-user-md"></i>
+            <span>إعدادات الأطباء</span>
+        </a>
+        <div id="collapseDoctors" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <a class="collapse-item" href="{% url 'view_doctor_user' %}">عرض الأطباء</a>
+                
+                <!-- <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                <a class="collapse-item" href="utilities-other.html">Other</a> -->
+            </div>
+        </div>
+    </li>
+
+
+
+    <!-- Heading -->
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePharmacies"
+            aria-expanded="true" aria-controls="collapsePharmacies">
+            <i class="fas fa-fw fa-capsules"></i>
+            <span>إعدادات الصيدليات</span>
+        </a>
+        <div id="collapsePharmacies" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <!-- <a class="collapse-item" href="{% url 'login' %}">Login</a>
+                <a class="collapse-item" href="{% url 'register' %}">Register</a>
+                <a class="collapse-item" href="{% url 'forgot-password' %}">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6> -->
+                <a class="collapse-item" href="{% url 'view_pharmacy_user' %}">عرض الصيدليات</a>
+                
+                <!-- <a class="collapse-item" href="{% url 'view_doctor' %}">view doctor</a> -->
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePhacilities"
+            aria-expanded="true" aria-controls="collapsePhacilities">
+            <i class="fas fa-fw fa-clinic-medical"></i>
+            <span>إعدادات المستشفيات</span>
+        </a>
+        <div id="collapsePhacilities" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <!-- <a class="collapse-item" href="{% url 'login' %}">Login</a>
+                <a class="collapse-item" href="{% url 'register' %}">Register</a>
+                <a class="collapse-item" href="{% url 'forgot-password' %}">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6> -->
+                <a class="collapse-item" href="{% url 'view_medical_phacility_user' %}">عرض المستشفيات</a>
+               
+                <!-- <a class="collapse-item" href="{% url 'view_doctor' %}">view doctor</a> -->
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNurses" aria-expanded="true"
+            aria-controls="collapseNurses">
+            <i class="fas fa-fw fa-user-nurse"></i>
+            <span>إعدادات الممرض</span>
+        </a>
+        <div id="collapseNurses" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <!-- <a class="collapse-item" href="{% url 'login' %}">Login</a>
+                <a class="collapse-item" href="{% url 'register' %}">Register</a>
+                <a class="collapse-item" href="{% url 'forgot-password' %}">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6> -->
+                <a class="collapse-item" href="{% url 'view_nurse_user' %}">عرض الممرضين </a>
+                
+                <!-- <a class="collapse-item" href="{% url 'view_doctor' %}">view doctor</a> -->
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInsurance"
+            aria-expanded="true" aria-controls="collapseInsurance">
+            <i class="fas fa-fw far fa-credit-card"></i>
+            <span>إعدادات شركات التأمين</span>
+        </a>
+        <div id="collapseInsurance" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <!-- <a class="collapse-item" href="{% url 'login' %}">Login</a>
+                <a class="collapse-item" href="{% url 'register' %}">Register</a>
+                <a class="collapse-item" href="{% url 'forgot-password' %}">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6> -->
+                <a class="collapse-item" href="#">عرض شركات التأمين</a>
+                
+                <!-- <a class="collapse-item" href="{% url 'view_doctor' %}">view doctor</a> -->
+            </div>
+        </div>
+    </li>
+
+
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+    <!-- Sidebar Message -->
+
+</ul>

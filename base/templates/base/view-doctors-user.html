@@ -1,0 +1,78 @@
+{% extends "main.html" %}
+{% block title %}
+View Doctors
+{% endblock title %}
+
+{% block content %}
+<!-- Begin Page Content -->
+<div id="wrapper">
+    {% include "sidebar2.html" %}
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            {% include "topbar.html" %}
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">الأطباء</h1>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم الأول</th>
+                                        <th>الاسم الأخير</th>
+                                        <th>الجنس</th>
+                                        <th>الاختصاص</th>
+                                        <th>شركة التأمين</th>
+                                        <th>المحافظة</th>
+                                        <th>التقييم</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <!-- <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Office</th>
+                                        <th>Age</th>
+                                        <th>Start date</th>
+                                        <th>Salary</th>
+                                    </tr>
+                                </tfoot> -->
+
+                                <tbody>
+                                    {% for doctor in doctors %}
+                                    <tr>
+                                        <td>{{ doctor.firstname }}</td>
+                                        <td>{{ doctor.lastname }}</td>
+                                        <td>{{ doctor.gender }}</td>
+                                        <td>{{ doctor.specialization }}</td>
+                                        <td>{{ doctor.insurancecompany }}</td>
+                                        <td>{{ doctor.governorate }}</td>
+                                        <td>-</td>
+                                       
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+{% endblock content %}

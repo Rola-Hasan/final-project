@@ -1,0 +1,412 @@
+{% extends "main.html" %}
+{% block title %}
+View Doctors
+{% endblock title %}
+
+{% block content %}
+<style>
+    /* Modal Styling */
+    /* Modal Styling */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        padding-top: 60px;
+    }
+
+    .modal-dialog {
+        margin: 15% auto;
+        width: 30%;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .close {
+        font-size: 1.5rem;
+        color: #aaa;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Styling for Success Modal */
+    #successDeleteModal .modal-body {
+        color: green;
+        font-weight: bold;
+    }
+
+    #successDeleteModal .btn-primary {
+        background-color: #5cb85c;
+    }
+
+    /* Styling for Confirmation Modal */
+    #confirmDeleteModal .modal-body {
+        color: red;
+        font-weight: bold;
+    }
+
+    #confirmDeleteModal .btn-danger {
+        background-color: #d9534f;
+    }
+</style>
+<!-- Begin Page Content -->
+<div id="wrapper">
+    {% include "sidebar.html" %}
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            {% include "topbar.html" %}
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">جدول مواعيد د. {{ doctor.firstname }} {{ doctor.lastname }}</h1>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>اليوم</th>
+
+                                        <th>وقت البدء </th>
+                                        <th>وقت الانتهاء </th>
+                                        
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for schedule in schedules %}
+                                <tr data-id="{{ schedule.id }}">
+                                    <td>{{ schedule.get_day_in_arabic }}</td>
+                                    <td>
+                                        <span class="view-mode">{{ schedule.start_time }}</span>
+                                        <input type="time" class="edit-mode form-control d-none" value="{{ schedule.start_time }}">
+                                    </td>
+                                    <td>
+                                        <span class="view-mode">{{ schedule.end_time }}</span>
+                                        <input type="time" class="edit-mode form-control d-none" value="{{ schedule.end_time }}">
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-info btn-circle btn-sm  info">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                       
+                                        <button class="btn btn-warning btn-circle btn-sm toggle-edit">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <a href="#" class="btn btn-secondary btn-circle btn-sm delete" data-id="{{ schedule.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        
+                                        <button class="btn btn-success btn-circle btn-sm save-edit d-none">
+                                            <i class="fas fa-save"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-circle btn-sm cancel-edit d-none">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                  
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">No schedules available for this doctor.</td>
+                                </tr>
+                                {% endfor %}
+                                       
+                                  
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Confirmation edit Modal -->
+<div id="saveConfirmModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد الحفظ</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>هل تريد حفظ التعديلات؟</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary confirm-save">حفظ</button>
+                <button class="btn btn-secondary cancel-save">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Confirmation Modal for Deletion -->
+<div id="confirmDeleteModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد الحذف</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من أنك تريد حذف هذا الجدول؟</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal for Successful Deletion -->
+<div id="successDeleteModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تم الحذف بنجاح</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>تم حذف الجدول بنجاح.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="closeSuccessBtn">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const successDeleteModal = document.getElementById('successDeleteModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+
+        let scheduleIdToDelete = null; // Store the schedule ID to delete
+        let scheduleRowToDelete = null; // Store the row of the schedule to delete
+
+        // Event listener for delete button
+        document.querySelectorAll('.delete').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // Get the schedule ID and row
+                scheduleIdToDelete = this.getAttribute('data-id');
+                scheduleRowToDelete = this.closest('tr');
+
+                // Show the confirmation modal
+                confirmDeleteModal.style.display = 'block';
+            });
+        });
+
+        // Confirm deletion
+        confirmDeleteBtn.addEventListener('click', function () {
+            if (scheduleIdToDelete) {
+                // Send a DELETE request
+                fetch(`/delete-schedule/${scheduleIdToDelete}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(), // CSRF token from meta tag
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Hide the confirmation modal
+                            confirmDeleteModal.style.display = 'none';
+
+                            // Show the success modal
+                            successDeleteModal.style.display = 'block';
+
+                            // Remove the row from the table
+                            scheduleRowToDelete.remove();
+                        } else {
+                            alert('Failed to delete the schedule: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                        confirmDeleteModal.style.display = 'none';
+                    });
+            }
+        });
+
+        // Cancel deletion
+        cancelDeleteBtn.addEventListener('click', function () {
+            confirmDeleteModal.style.display = 'none';
+        });
+
+        // Close the success modal
+        closeSuccessBtn.addEventListener('click', function () {
+            successDeleteModal.style.display = 'none';
+        });
+    });
+
+    // Helper function to get the CSRF token
+    function getCSRFToken() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            return csrfToken.getAttribute('content');
+        } else {
+            console.error('CSRF token not found');
+            return '';
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let activeRow = null;
+
+        // Toggle between view and edit mode
+        document.querySelectorAll(".toggle-edit").forEach(button => {
+            button.addEventListener("click", function () {
+                const row = this.closest("tr");
+                row.querySelectorAll(".view-mode").forEach(el => el.classList.add("d-none"));
+                row.querySelectorAll(".edit-mode").forEach(el => el.classList.remove("d-none"));
+                row.querySelector(".save-edit").classList.remove("d-none");
+                row.querySelector(".cancel-edit").classList.remove("d-none");
+                this.classList.add("d-none");
+                activeRow = row;
+            });
+        });
+
+        // Cancel editing
+        document.querySelectorAll(".cancel-edit").forEach(button => {
+            button.addEventListener("click", function () {
+                const row = this.closest("tr");
+                row.querySelectorAll(".view-mode").forEach(el => el.classList.remove("d-none"));
+                row.querySelectorAll(".edit-mode").forEach(el => el.classList.add("d-none"));
+                row.querySelector(".save-edit").classList.add("d-none");
+                row.querySelector(".toggle-edit").classList.remove("d-none");
+                this.classList.add("d-none");
+            });
+        });
+
+        // Save editing
+        document.querySelectorAll(".save-edit").forEach(button => {
+            button.addEventListener("click", function () {
+                const row = this.closest("tr");
+                const id = row.dataset.id;
+                const startTime = row.querySelector("input[type='time']").value;
+                const endTime = row.querySelectorAll("input[type='time']")[1].value;
+
+                // Show confirmation modal
+                const modal = document.getElementById("saveConfirmModal");
+                modal.style.display = "block";
+
+                modal.querySelector(".confirm-save").onclick = function () {
+                    modal.style.display = "none";
+
+                    // Save to the server
+                    fetch(`/update-schedule/${id}/`, {
+                        method: "PUT",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            start_time: startTime,
+                            end_time: endTime,
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                row.querySelector(".view-mode").textContent = startTime;
+                                row.querySelectorAll(".view-mode")[1].textContent = endTime;
+                                alert("تم تحديث الجدول بنجاح");
+                            } else {
+                                alert("خطأ في التحديث");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("حدث خطأ");
+                        });
+
+                    // Switch back to view mode
+                    row.querySelectorAll(".view-mode").forEach(el => el.classList.remove("d-none"));
+                    row.querySelectorAll(".edit-mode").forEach(el => el.classList.add("d-none"));
+                    row.querySelector(".save-edit").classList.add("d-none");
+                    row.querySelector(".cancel-edit").classList.add("d-none");
+                    row.querySelector(".toggle-edit").classList.remove("d-none");
+                };
+
+                modal.querySelector(".cancel-save").onclick = function () {
+                    modal.style.display = "none";
+                };
+            });
+        });
+
+        // CSRF helper
+        function getCSRFToken() {
+            const token = document.querySelector("meta[name='csrf-token']");
+            return token ? token.content : "";
+        }
+    });
+</script>
+
+
+
+
+
+
+<!-- /.container-fluid -->
+{% endblock content %}

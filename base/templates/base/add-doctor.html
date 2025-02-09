@@ -1,0 +1,207 @@
+{% extends "main.html" %}
+
+{% block title %}Add Doctor{% endblock title %}
+
+{% block content %}
+
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        {% include "sidebar.html" %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                {% include "topbar.html" %}
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">إضافة طبيب</h1>
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <!-- First Name and Last Name -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <input type="text" name="firstname" id="firstname" class="form-control"
+                                                required />
+                                            <label class="form-label" for="firstname">الاسم الأول</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <input type="text" name="lastname" id="lastname" class="form-control"
+                                                required />
+                                            <label class="form-label" for="lastname">الاسم الأخير</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gender and Specialization -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <select class="form-select form-control" name="gender" required>
+                                            <option value="M">ذكر</option>
+                                            <option value="F">أنثى</option>
+                                        </select>
+                                        <label class="form-label" for="gender">الجنس</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-select form-control" name="specialization" required>
+                                            {% for specialization in specializations %}
+                                            <option value="{{ specialization.id }}">{{ specialization.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="form-label" for="specialization">الاختصاص</label>
+                                    </div>
+                                </div>
+                                <!-- Additional Fields: Address, Governorate, Insurance Company, Phone Number, Description -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <input type="text" name="address" id="address" class="form-control" required />
+                                            <label class="form-label" for="address">العنوان</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-select form-control" name="governorate" required>
+                                            {% for governorate in governorates %}
+                                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="form-label" for="governorate">المحافظة</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <select class="form-select form-control" name="insurance_company" required>
+                                            {% for company in insurance_companies %}
+                                            <option value="{{ company.id }}">{{ company.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="form-label" for="insurance_company">شركة التأمين</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <input type="tel" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" required />
+                                            <label class="form-label" for="phone">رقم الهاتف</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <div class="form-outline">
+                                            <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                                            <label class="form-label" for="description">الوصف</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Dynamic Day and Time Schedule -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <h5>جدول العمل</h5>
+                                        <div id="schedule-container">
+                                            <div class="schedule-item">
+                                            <button class="close" type="button" aria-label="Close" onclick="removeScheduleItem(this)">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                                <div class="row">
+                                                    
+                                                    <div class="col-md-4">
+                                                    
+                                                        <select class="form-select form-control" name="days[]" required>
+                                                            <option value="Sunday">الأحد</option>
+                                                            <option value="Monday">الإثنين</option>
+                                                            <option value="Tuesday">الثلاثاء</option>
+                                                            <option value="Wednesday">الأربعاء</option>
+                                                            <option value="Thursday">الخميس</option>
+                                                            <option value="Friday">الجمعة</option>
+                                                            <option value="Saturday">السبت</option>
+                                                        </select>
+                                                        <label>اليوم</label>
+                                                        
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="time" class="form-control" name="start_times[]"
+                                                            required pattern="[0-9]{2}:[0-9]{2}" />
+                                                        <label>وقت البداية</label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="time" class="form-control" name="end_times[]"
+                                                            required pattern="[0-9]{2}:[0-9]{2}" />
+                                                        <label>وقت النهاية</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary mt-3" id="add-schedule">إضافة
+                                            يوم</button>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12 text-center">
+                                        <input type="submit" class="btn btn-primary mb-4" value="إضافة">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    // Function to remove the specific schedule item
+    function removeScheduleItem(button) {
+        // Get the parent schedule item and remove it
+        button.closest('.schedule-item').remove();
+    }
+
+    // JavaScript to add new schedule rows
+    document.getElementById('add-schedule').addEventListener('click', function () {
+        const scheduleContainer = document.getElementById('schedule-container');
+
+        const newScheduleItem = document.createElement('div');
+        newScheduleItem.classList.add('schedule-item');
+
+        newScheduleItem.innerHTML = `
+            <button class="close" type="button" aria-label="Close" onclick="removeScheduleItem(this)">
+                <span aria-hidden="true">×</span>
+            </button>
+            <div class="row">
+                <div class="col-md-4">
+                    <select class="form-select form-control" name="days[]" required>
+                        <option value="Sunday">الأحد</option>
+                        <option value="Monday">الإثنين</option>
+                        <option value="Tuesday">الثلاثاء</option>
+                        <option value="Wednesday">الأربعاء</option>
+                        <option value="Thursday">الخميس</option>
+                        <option value="Friday">الجمعة</option>
+                        <option value="Saturday">السبت</option>
+                    </select>
+                    <label>اليوم</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="time" class="form-control" name="start_times[]" required pattern="[0-9]{2}:[0-9]{2}" />
+                    <label>وقت البداية</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="time" class="form-control" name="end_times[]" required pattern="[0-9]{2}:[0-9]{2}" />
+                    <label>وقت النهاية</label>
+                </div>
+            </div>
+        `;
+        scheduleContainer.appendChild(newScheduleItem);
+    });
+</script>
+
+{% endblock content %}

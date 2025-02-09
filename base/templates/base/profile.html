@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Profile Settings</h1>
+        <div class="card mx-auto" style="max-width: 500px;">
+            <div class="card-body">
+                <!-- Form for profile settings -->
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Profile Picture -->
+                    <div class="text-center mb-4">
+                        <img id="profilePicture"
+                            src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'img/undraw_profile.svg' %}{% endif %}"
+                            alt="Profile Picture" class="img-thumbnail rounded-circle"
+                            style="width: 150px; height: 150px;">
+                        <input type="file" id="uploadPicture" name="profile_picture" class="form-control-file mt-2"
+                            accept="image/*">
+                    </div>
+
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ form.name.value }}"
+                            required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('uploadPicture').addEventListener('change', function (event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('profilePicture').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    </script>
+</body>
+
+</html>
