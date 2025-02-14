@@ -1,0 +1,203 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock title %}</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="{% static 'img/logo2.png' %}" rel="icon">
+    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap1/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'css/main1.css' %}" rel="stylesheet">
+</head>
+  
+<body class="index-page">
+
+
+
+    <div class="wrapper">
+        <!-- Location Modal -->
+        <!-- <div id="location-modal" class="modal" style="display: block;">
+            <div class="modal-content">
+                <h2>نحتاج إلى موقعك</h2>
+                <p>هل تريد أن تسمح لنا بالوصول لموقعك الحالي؟ </p>
+                <button id="get-location-btn">السماح بالوصول للموقع</button>
+                <button id="manual-entry-btn">إدخال الموقع بشكل يدوي</button>
+            </div>
+        </div> -->
+
+      
+        <header id="header" class="header d-flex align-items-center fixed-top">
+            <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+                <a href="{% url 'main_home1' %}" class="logo d-flex align-items-center me-auto">
+                    <img src="{% static 'img/logo2.png' %}" alt="">
+                    <h1 class="sitename"><span style="color:#388da8 ;">Fin</span>Doc</h1>
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="{% url 'main_home1' %}" class="active">الصفحة الرئيسية</a></li>
+                        <li><a href="{% url 'about' %}">من نحن</a></li>
+                        <li><a href="index.html#features">الميزات</a></li>
+                        <li><a href="index.html#services">الخدمات</a></li>
+                        <!-- <li><a href="index.html#pricing">Pricing</a></li> -->
+                        <li class="dropdown"><a href="#"><span>طرق البحث</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li class="dropdown">
+                                    <a href="#"><span>عن طريق الموقع</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                    <ul>
+                                <li><a href="{% url 'search_by_location' %}">الأطباء</a></li>
+                                <li><a href="{% url 'search_nearest_medical_facility1' %}">مرفق طبي</a></li>
+                                <li><a href="{% url 'search_nearest_pharmacy1' %}">صيدلية</a></li>
+                                <li><a href="{% url 'search_nearest_nurse1' %}">ممرض</a></li>
+                                </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#"><span>عن طريق المحافظة</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                    <ul>
+                                        {% for governorate in governorates %}
+                                        <li class="dropdown">
+                                            <a href="#"><span>{{ governorate.name }}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                            <ul>
+
+                                            <li class="dropdown">
+                                                <a href="#"><span>مرفق طبي</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                                <ul>
+                                            
+                                                {% for facility_type in medical_types %}
+                                                     <li>
+                                                     <a href="{% url 'facilities_in_governorate' governorate.id facility_type.id %}">
+                                                        {{ facility_type.name }}
+                                                   </a>
+                                                     </li>
+                                                   {% endfor %} 
+                                                   
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown">
+                                                <a href="#"><span>طبيب </span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                                <ul>
+                                            
+                                            {% for specialization in specializations %}
+                                                     <li>
+                                                    <a href="{% url 'doctors_in_governorate' governorate.id specialization.id %}">
+                                                        {{ specialization.name }}
+                                                    </a>
+                                                     </li>
+                                                   {% endfor %} 
+                                                   
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown">
+                                                <a href="{% url 'pharmacies_in_governorate' governorate.id %}"><span>صيدلية </span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                               
+                                            </li>
+                                            <li class="dropdown">
+                                                <a href="{% url 'nurses_in_governorate' governorate.id %}"><span>ممرض </span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                               
+                                            </li>
+                                                <!-- {% for specialization in specializations %}
+                                                <li>
+                                                    <a href="{% url 'doctors_in_governorate' governorate.id specialization.id %}">
+                                                        {{ specialization.name }}
+                                                    </a>
+                                                </li>
+                                                {% endfor %} -->
+                                            </ul>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                                <li><a href="{% url 'search' %}">طرق أخرى</a></li>
+                             
+                            </ul>
+                        </li>
+                        <li><a href="index.html#contact">تواصل معنا</a></li>
+
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+
+                </nav>
+
+
+            </div>
+        </header>
+       </div>
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}
+<div>
+        <footer id="footer" class="footer position-relative light-background">
+
+
+
+            <div class="container copyright text-center mt-4">
+                <p>© <span>Copyright</span> <strong class="px-1 sitename">Manara University</strong><span>All Rights
+                        Reserved</span></p>
+                <div class="credits">
+                  
+                </div>
+            </div>
+
+        </footer>
+</div>
+   
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+    <script>
+        document.getElementById("sidebarToggle").addEventListener("click", function () {
+            document.getElementById("accordionSidebar").classList.toggle("show");
+        });
+    </script>
+
+    
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'vendor/bootstrap1/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+    <!-- Main JS File -->
+    <script src="{% static 'js/main1.js' %}"></script>
+
+</body>

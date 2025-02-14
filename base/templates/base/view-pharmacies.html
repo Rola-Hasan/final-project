@@ -1,83 +1,10 @@
 {% extends "main.html" %}
 {% block title %}
-View Doctors
+عرض الصيدليات
 {% endblock title %}
 
 {% block content %}
-<style>
-    /* Modal Styling */
-    /* Modal Styling */
-    .modal {
-        display: none;
-        /* Hidden by default */
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.4);
-        /* Black w/ opacity */
-        padding-top: 60px;
-    }
 
-    .modal-dialog {
-        margin: 15% auto;
-        width: 30%;
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 100%;
-        border-radius: 5px;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .close {
-        font-size: 1.5rem;
-        color: #aaa;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-    }
-
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    /* Styling for Success Modal */
-    #successDeleteModal .modal-body {
-        color: green;
-        font-weight: bold;
-    }
-
-    #successDeleteModal .btn-primary {
-        background-color: #5cb85c;
-    }
-
-    /* Styling for Confirmation Modal */
-    #confirmDeleteModal .modal-body {
-        color: red;
-        font-weight: bold;
-    }
-
-    #confirmDeleteModal .btn-danger {
-        background-color: #d9534f;
-    }
-</style>
 <!-- Begin Page Content -->
 <div id="wrapper">
     {% include "sidebar.html" %}
@@ -133,10 +60,10 @@ View Doctors
                                         <td>{{ pharmacy.address }}</td>
                                         <td>-</td>
                                         <td>
-                                            <a href="#" class="btn btn-info btn-circle btn-sm info ">
+                                            <a href="{% url 'pharmacy_details' pharmacy.id %}" class="btn btn-info btn-circle btn-sm info ">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
-                                            <a href="#" class="btn btn-warning btn-circle btn-sm edit">
+                                            <a href="{% url 'editpharmacy' pharmacy.id  %}" class="btn btn-warning btn-circle btn-sm edit">
                                                 <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-secondary btn-circle btn-sm delete" data-id="{{ pharmacy.id }}">

@@ -1,0 +1,127 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}
+مرافق طبية محافظة
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    /* Adjust arrow button size */
+    .swiper-button-next,
+    .swiper-button-prev {
+        font-size: 20px !important;
+        /* Reduce arrow size */
+        width: 40px !important;
+        height: 40px !important;
+        background-color: rgba(0, 0, 0, 0.1);
+        /* Optional: Light background */
+        border-radius: 50%;
+        /* Make them circular */
+    }
+
+    /* Position arrows further from the cards */
+    .swiper-button-next {
+        right: -60px !important;
+        /* Move further to the right */
+    }
+
+    .swiper-button-prev {
+        left: -60px !important;
+        /* Move further to the left */
+    }
+</style>
+
+<main class="main">
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials section light-background" style="margin-top: 200px;">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>مرافق طبية محافظة {{ governorate }}</h2>
+           
+        </div>
+
+        <!-- Swiper Container -->
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper init-swiper">
+                <script type="application/json" class="swiper-config">
+                {
+                    "loop": true,
+                    "speed": 600,
+                    "autoplay": { "delay": 5000 },
+                    "slidesPerView": "auto",
+                    "spaceBetween": 20,
+                    "grabCursor": true,
+                    "centeredSlides": true,
+                    "navigation": {
+                        "nextEl": ".swiper-button-next",
+                        "prevEl": ".swiper-button-prev"
+                    },
+                    "pagination": {
+                        "el": ".swiper-pagination",
+                        "type": "bullets",
+                        "clickable": true
+                    },
+                    "breakpoints": {
+                        "320": { "slidesPerView": 1, "spaceBetween": 10 },
+                        "768": { "slidesPerView": 2, "spaceBetween": 15 },
+                        "1200": { "slidesPerView": 3, "spaceBetween": 20 }
+                    }
+                }
+                </script>
+                <div class="swiper-wrapper">
+                    {% for facility in facilities %}
+                    <div class="swiper-slide">
+                        <div class="testimonial-item">
+                            <p>{{ facility.description }}</p>
+                            <div class="profile mt-auto">
+                                <h3 style="color:#388da8">{{ facility.name }}</h3>
+                                <p>{{ facility.address }}</p>
+                                <p><i class='fas fa-phone'></i> {{ facility.phone_number }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>لا توجد مرافق طبية متاحة في هذه المحافظة.</p>
+                    {% endfor %}
+                </div>
+                <!-- Pagination & Navigation Buttons -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var swiper = new Swiper(".swiper-container", {
+            loop: true,
+            speed: 500, // 0.5 seconds transition speed
+            autoplay: {
+                delay: 500, // Auto swipe every 0.5 seconds
+                disableOnInteraction: false, // Continue autoplay after user interaction
+            },
+            centeredSlides: true, // Ensure the swiped card is in the center
+            slidesPerView: "auto", // Ensure flexibility in viewing
+            spaceBetween: 20,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
+            },
+            breakpoints: {
+                320: { slidesPerView: 1, spaceBetween: 10 },
+                768: { slidesPerView: 2, spaceBetween: 15 },
+                1200: { slidesPerView: 3, spaceBetween: 20 }
+            }
+        });
+    });
+</script>
+
+{% endblock content %}

@@ -22,23 +22,25 @@
                     <div class="card shadow mb-4">
 
                         <div class="card-body">
-                            <form method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
 
                                 <!-- First Name and Last Name -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
+                                        <label class="form-label" for="form6Example1">الاسم الأول</label>
                                         <div class="form-outline">
                                             <input type="text" name="fname" id="form6Example1"
                                                 class="form-control" required />
-                                            <label class="form-label" for="form6Example1">الاسم الأول</label>
+                                           
                                         </div>
                                     </div>
                                     <div class="col-md-6">
+                                        <label class="form-label" for="form6Example2">الاسم الأخير</label>
                                         <div class="form-outline">
                                             <input type="text" name="lname" id="form6Example2"
                                                 class="form-control" required />
-                                            <label class="form-label" for="form6Example2">الاسم الأخير</label>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -46,36 +48,40 @@
                                 <!-- Gender and Specialization -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
+                                        <label class="form-label" for="gender">الجنس</label>
                                         <select class="form-select form-control" name="gender" required>
                                             <option value="M">ذكر</option>
                                             <option value="F">أنثى</option>
                                         </select>
-                                        <label class="form-label" for="gender">الجنس</label>
+                                        
                                     </div>
                                     <div class="col-md-6">
+                                        <label class="form-label" for="governorate">المحافظة</label>
                                         <select class="form-select form-control" name="governorate" required>
                                             {% for governorate in governorates %}
                                             <option value="{{ governorate.id }}">{{ governorate.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <label class="form-label" for="governorate">المحافظة</label>
+                                        
                                     </div>
                                 </div>
 
                                 <!-- Insurance Company and Phone Number -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
+                                        <label class="form-label" for="insurance">شركة التأمين</label>
                                         <select class="form-select form-control" name="insurance" required>
                                             {% for insurance in insurance_companies %}
                                             <option value="{{ insurance.id }}">{{ insurance.name }}</option>
                                             {% endfor %}
                                         </select>
-                                        <label class="form-label" for="insurance">شركة التأمين</label>
+                                        
                                     </div>
                                     <div class="col-md-6">
+                                        <label class="form-label" for="phone">رقم الهاتف</label>
                                         <div class="form-outline">
                                             <input type="text" name="phone" id="phone" class="form-control" required />
-                                            <label class="form-label" for="phone">رقم الهاتف</label>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -84,21 +90,31 @@
                                 <div class="row mb-4">
                                    
                                     <div class="col-md-6">
+                                        <label class="form-label" for="address">العنوان</label>
                                         <div class="form-outline">
                                             <textarea class="form-control" name="address" id="address" rows="3"
                                                 required></textarea>
-                                            <label class="form-label" for="address">العنوان</label>
+                                            
                                         </div>
                                     </div>
                                     <div class="col-md-6">
+                                        <label class="form-label" for="picture">الصورة الشخصية</label>
                                         <div class="form-outline">
-                                            <textarea class="form-control" name="description" id="address" rows="3"
-                                              ></textarea>
-                                            <label class="form-label" for="address">ملاحظات</label>
+                                            <input type="file" name="picture" id="picture" class="form-control" />
+                                           
                                         </div>
+                                        
                                     </div>
                                 </div>
-
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="address">الوصف</label>
+                                <div class="form-outline">
+                                    <textarea class="form-control" name="description" id="address" rows="3"></textarea>
+                                    
+                                </div>
+                                </div>
+                                </div>
                                 <!-- Submit Button -->
                                 <div class="row mb-4">
                                     <div class="col-md-12 text-center">

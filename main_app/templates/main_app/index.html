@@ -1,0 +1,94 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}
+FinDoc
+{% endblock title %}
+
+{% block content %}
+<!-- Location Consent Modal -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="locationModalLabel">مشاركة موقعك</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        هل ترغب في مشاركة موقعك للحصول على تجربة أفضل؟
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا، شكرًا</button>
+        <button type="button" id="consentButton" class="btn btn-primary">نعم، سماح</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden form to send location to backend -->
+<form id="locationForm" method="POST" action="{% url 'save_location' %}">
+  {% csrf_token %}
+  <input type="hidden" id="latitude" name="latitude">
+  <input type="hidden" id="longitude" name="longitude">
+</form>
+
+<main class="main">
+  <!-- Hero Section -->
+  <section id="hero" class="hero section">
+    <div class="container text-center">
+      <div class="d-flex flex-column justify-content-center align-items-center">
+        <h1 style="margin-bottom: 40px;"><span style="color:#388da8 ;">Fin</span>Doc</h1>
+        <h2 data-aos="fade-up" style="margin-bottom: 20px;">حيث نضع صحتكم في المقام الأول</h2>
+
+        {% if messages %}
+        <div class="alert-container">
+          {% for message in messages %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <img src="{% static 'img/Picture2.png' %}" class="img-fluid hero-img" alt="" data-aos="zoom-out"
+          data-aos-delay="300">
+      </div>
+    </div>
+  </section><!-- /Hero Section -->
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var locationModal = new bootstrap.Modal(document.getElementById('locationModal'));
+
+    // Check if session already has location
+    var locationStored = "{{ request.session.location_shared|default:'false'|escapejs }}";
+
+    if (locationStored === "false") {
+      locationModal.show();
+    }
+
+    var consentButton = document.getElementById('consentButton');
+
+    consentButton.addEventListener('click', function () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          document.getElementById('latitude').value = position.coords.latitude;
+          document.getElementById('longitude').value = position.coords.longitude;
+
+          // Submit the form to store location in session
+          document.getElementById('locationForm').submit();
+
+          // Close the modal after location is set
+          locationModal.hide();
+        });
+      } else {
+        alert("متصفحك لا يدعم تحديد الموقع الجغرافي");
+      }
+    });
+  });
+</script>
+
+
+{% endblock content %}

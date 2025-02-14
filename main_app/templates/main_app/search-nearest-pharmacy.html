@@ -1,0 +1,166 @@
+{% extends "master.html" %}
+
+{% block content %}
+<!-- Location Consent Modal -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="locationModalLabel">مشاركة موقعك</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                هل ترغب في مشاركة موقعك للعثور على المرافق الطبية القريبين منك؟
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا، شكرًا</button>
+                <button type="button" id="consentButton" class="btn btn-primary">نعم، سماح</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form to send location to backend -->
+<form id="locationForm" method="POST" action="{% url 'save_location' %}">
+    {% csrf_token %}
+    <input type="hidden" id="latitude" name="latitude">
+    <input type="hidden" id="longitude" name="longitude">
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var locationStored = "{{ request.session.location_shared|default:'false'|escapejs }}";
+        var locationModal = new bootstrap.Modal(document.getElementById('locationModal'));
+
+        if (locationStored === "false") {
+            locationModal.show(); // Show modal only if location is not stored
+        }
+
+        document.getElementById('consentButton').addEventListener('click', function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+
+                    // Submit form to save location
+                    document.getElementById('locationForm').submit();
+                }, function (error) {
+                    alert("لم نتمكن من الحصول على موقعك. يرجى السماح بالوصول إلى الموقع.");
+                });
+            } else {
+                alert("متصفحك لا يدعم تحديد الموقع الجغرافي.");
+            }
+        });
+    });
+</script>
+
+<main class="main">
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+        <div class="container">
+          
+            <div class="row height d-flex justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <h3>نتائج البحث - الصيدليات :</h3>
+
+                    {% if nearest_pharmacies %}
+                   
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            {% for item in nearest_pharmacies %}
+                            <div class="swiper-slide">
+                                <div class="testimonial-item">
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                    <p>{{ item.facility.description }}</p>
+                                    <div class="profile mt-auto">
+                                        <img src="{{ item.pharmacy.profile_picture.url }}" class="testimonial-img"
+                                            width="100px" alt="{{ item.pharmacy.name }}">
+                                        <h3>{{ item.pharmacy.name }}</h3>
+                                        <p><i class="fas fa-map-marker-alt"></i> {{ item.pharmacy.address }}</p>
+                                        <!-- <p><i class="fas fa-ruler"></i> {{ item.distance|floatformat:2 }} كم</p> -->
+                                        <p><i class="fas fa-phone"></i> {{ item.pharmacy.phone_number }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p>لم يتم العثور على صيدليات بالقرب منك.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section><!-- /Hero Section -->
+</main>
+
+<!-- SwiperJS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 3,
+        spaceBetween: 20,
+        loop: false,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+    });
+</script>
+
+<style>
+    .testimonial-item {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+
+    .testimonial-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .stars i {
+        color: #ffcc00;
+    }
+
+    .profile h3 {
+        color: #388da8;
+    }
+
+    .profile p {
+        color: #555;
+    }
+
+    .swiper-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+        .testimonial-item {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,451 @@
+{% extends "main.html" %}
+{% block title %}
+View Doctors
+{% endblock title %}
+
+{% block content %}
+<style>
+    /* Modal Styling */
+    /* Modal Styling */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+        padding-top: 60px;
+    }
+
+    .modal-dialog {
+        margin: 15% auto;
+        width: 30%;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .close {
+        font-size: 1.5rem;
+        color: #aaa;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Styling for Success Modal */
+    #successDeleteModal .modal-body {
+        color: green;
+        font-weight: bold;
+    }
+
+    #successDeleteModal .btn-primary {
+        background-color: #5cb85c;
+    }
+
+    /* Styling for Confirmation Modal */
+    #confirmDeleteModal .modal-body {
+        color: red;
+        font-weight: bold;
+    }
+
+    #confirmDeleteModal .btn-danger {
+        background-color: #d9534f;
+    }
+</style>
+<!-- Begin Page Content -->
+<div id="wrapper">
+    {% include "sidebar.html" %}
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            {% include "topbar.html" %}
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">الأطباء</h1>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+
+                                        <th>الجنس</th>
+                                        <th>الاختصاص</th>
+                                        <th>شركة التأمين</th>
+                                        <th>المحافظة</th>
+                                        <th>الصورة الشخصية</th>
+                                        <th>التقييم</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doctor in doctors %}
+                                    <tr data-id="{{ doctor.id }}" data-firstname="{{ doctor.firstname }}"
+                                        data-lastname="{{ doctor.lastname }}" data-gender="{{ doctor.gender }}"
+                                        data-specialization="{{ doctor.specialization }}"
+                                        data-insurancecompany="{{ doctor.insurancecompany }}"
+                                        data-governorate="{{ doctor.governorate }}">
+                                        <td>{{ doctor.firstname }} {{ doctor.lastname }}</td>
+
+                                        <td>
+                                            {% if doctor.gender == 'M' %}
+                                            ذكر
+                                            {% else %}
+                                            أنثى
+                                            {% endif %}
+                                        </td>
+
+                                        <td>{{ doctor.specialization.name }}</td>
+                                        <td>{{ doctor.insurancecompany.name }}</td>
+                                        <td>{{ doctor.governorate.name }}</td>
+                                        <td>{% if doctor.profile_picture %}
+                                            <img src="{{ doctor.profile_picture.url }}" class="img-fluid rounded-circle"
+                                                alt="Profile Picture" width="40px">
+                                            {% else %}
+                                            لا يوجد
+                                            {% endif %}
+                                        </td>
+                                        <td>-</td>
+                                        <td>
+                                            <a href="{% url 'doctor_schedule' doctor.id %}"
+                                                class="btn btn-info btn-circle btn-sm info">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-warning btn-circle btn-sm edit"
+                                                data-toggle="modal" data-target="#editModal">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-secondary btn-circle btn-sm delete"
+                                                data-id="{{ doctor.id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- Confirmation Modal for Deletion -->
+<div id="confirmDeleteModal" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p>هل أنت متأكد من عملية الحذف؟</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal for Successful Deletion -->
+<div id="successDeleteModal" class="modal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div> -->
+            <div class="modal-body">
+                <p>تم الحذف بنجاح.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="closeSuccessBtn">تم</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        const successDeleteModal = document.getElementById('successDeleteModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+        let doctorIdToDelete = null;  // Store the doctor ID to delete
+        let doctorRowToDelete = null; // Store the row of the doctor to delete
+
+        // Event listener for delete button
+        document.querySelectorAll('.delete').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default anchor click behavior
+
+                // Get the doctor ID and store the row
+                doctorIdToDelete = this.getAttribute('data-id');
+                doctorRowToDelete = this.closest('tr');  // Get the closest table row
+
+                // Show the confirmation modal
+                confirmDeleteModal.style.display = 'block';
+            });
+        });
+
+        // Event listener for the "Delete" button in the confirmation modal
+        confirmDeleteBtn.addEventListener('click', function () {
+            if (doctorIdToDelete) {
+                // Send a request to delete the doctor from the database
+                fetch(`/delete-doctor/${doctorIdToDelete}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(), // CSRF token from meta tag
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Hide the confirmation modal
+                            confirmDeleteModal.style.display = 'none';
+
+                            // Show the success modal
+                            successDeleteModal.style.display = 'block';
+
+                            // Remove the row from the table immediately
+                            doctorRowToDelete.remove();
+                        } else {
+                            alert('Failed to delete the doctor. ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                        // Hide the confirmation modal if error occurs
+                        confirmDeleteModal.style.display = 'none';
+                    });
+            }
+        });
+
+        // Event listener for the "Cancel" button in the confirmation modal
+        cancelDeleteBtn.addEventListener('click', function () {
+            // Simply hide the confirmation modal
+            confirmDeleteModal.style.display = 'none';
+        });
+
+        // Close the confirmation modal if the "Close" button is clicked
+        document.querySelector('.close').addEventListener('click', function () {
+            confirmDeleteModal.style.display = 'none';
+        });
+
+        // Close the success modal when "Close" is clicked
+        closeSuccessBtn.addEventListener('click', function () {
+            // Hide the success modal
+            successDeleteModal.style.display = 'none';
+        });
+    });
+
+    // Helper function to get the CSRF token from the HTML document
+    function getCSRFToken() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            return csrfToken.getAttribute('content');
+        } else {
+            console.error('CSRF token not found');
+            return '';
+        }
+    }
+</script>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="editForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">تعديل المعلومات</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="doctorId" name="doctorId">
+                    <div class="form-group">
+                        <label for="firstname">الاسم الأول</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">الاسم الأخير</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">الجنس</label>
+                        <select class="form-control" id="gender" name="gender">
+                            <option value="M">ذكر</option>
+                            <option value="F">أنثى</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="specialization">الاختصاص</label>
+                        <select class="form-control" id="specialization" name="specialization">
+                            {% for specialization in specializations %}
+                            <option value="{{ specialization.id }}">{{ specialization.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="insurancecompany">شركة التأمين</label>
+                        <select class="form-control" id="insurancecompany" name="insurancecompany">
+                            {% for insurance in insurancecompanies %}
+                            <option value="{{ insurance.id }}">{{ insurance.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="governorate">المحافظة</label>
+                        <select class="form-control" id="governorate" name="governorate">
+                            {% for governorate in governorates %}
+                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">تأكيد التعديل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Table -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll(".edit");
+        const editForm = document.getElementById("editForm");
+
+        // Attach click event to all edit buttons
+        editButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const row = this.closest("tr");
+
+                // Populate modal fields with existing data
+                document.getElementById("doctorId").value = row.getAttribute("data-id");
+                document.getElementById("firstname").value = row.getAttribute("data-firstname");
+                document.getElementById("lastname").value = row.getAttribute("data-lastname");
+                document.getElementById("gender").value = row.getAttribute("data-gender");
+                document.getElementById("specialization").value = row.getAttribute("data-specialization");
+                document.getElementById("insurancecompany").value = row.getAttribute("data-insurancecompany");
+                document.getElementById("governorate").value = row.getAttribute("data-governorate");
+
+                // Show the modal
+                $("#editModal").modal("show");
+            });
+        });
+
+        // Handle form submission
+        editForm.addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent the default form submission behavior
+
+            const doctorId = document.getElementById("doctorId").value;
+            const updatedData = {
+                firstname: document.getElementById("firstname").value,
+                lastname: document.getElementById("lastname").value,
+                gender: document.getElementById("gender").value,
+                specialization: document.getElementById("specialization").value,
+                insurancecompany: document.getElementById("insurancecompany").value,
+                governorate: document.getElementById("governorate").value,
+            };
+
+            // Send AJAX request to update the doctor data
+            fetch(`/update-doctor/${doctorId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedData),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update data");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.success) {
+                        // Update table dynamically
+                        const row = document.querySelector(`tr[data-id="${doctorId}"]`);
+                        row.setAttribute("data-firstname", updatedData.firstname);
+                        row.setAttribute("data-lastname", updatedData.lastname);
+                        row.setAttribute("data-gender", updatedData.gender);
+                        row.setAttribute("data-specialization", updatedData.specialization);
+                        row.setAttribute("data-insurancecompany", updatedData.insurancecompany);
+                        row.setAttribute("data-governorate", updatedData.governorate);
+
+                        // Update displayed text in the table
+                        row.querySelector("td:nth-child(1)").textContent = updatedData.firstname;
+                        row.querySelector("td:nth-child(2)").textContent = updatedData.lastname;
+                        row.querySelector("td:nth-child(3)").textContent = updatedData.gender === "M" ? "ذكر" : "أنثى";
+
+                        // Hide the modal
+                        $("#editModal").modal("hide");
+                    } else {
+                        alert("حدث خطأ أثناء التعديل");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    alert("حدث خطأ أثناء الاتصال بالخادم");
+                });
+        });
+    });
+
+
+</script>
+
+
+
+
+
+<!-- /.container-fluid -->
+{% endblock content %}

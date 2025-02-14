@@ -59,15 +59,24 @@ class MedicalType(models.Model):
         return self.name
 
 
-class InsuranceCompany(models.Model):
+class Governorate(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
 
-class Governorate(models.Model):
+class InsuranceCompany(models.Model):
     name = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=10, null=True)
+    governorate = models.ForeignKey(Governorate, on_delete=models.CASCADE)
+    address = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-updated', '-created']
 
     def __str__(self):
         return self.name
@@ -85,14 +94,20 @@ class Doctor(models.Model):
     specialization = models.ForeignKey(
         Specialization, on_delete=models.CASCADE)
     insurancecompany = models.ForeignKey(
-        InsuranceCompany, on_delete=models.CASCADE)
+        InsuranceCompany, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=10)
-    governorate = models.ForeignKey(Governorate, on_delete=models.CASCADE)
+    governorate = models.ForeignKey(
+        Governorate, on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     rate = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)
+    profile_picture = models.ImageField(
+        upload_to='doctors/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']
@@ -142,16 +157,19 @@ class Schedule(models.Model):
 class Pharmacy(models.Model):
     name = models.CharField(max_length=200)
     insurancecompany = models.ForeignKey(
-        InsuranceCompany, on_delete=models.CASCADE)
+        InsuranceCompany, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=10)
     governorate = models.ForeignKey(
-        Governorate, on_delete=models.CASCADE)
+        Governorate, on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     rate = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)
-
+    profile_picture = models.ImageField(
+        upload_to='pharmacies/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']
@@ -167,16 +185,19 @@ class MedicalPhacility(models.Model):
     specialization = models.ForeignKey(
         Specialization, on_delete=models.CASCADE)
     insurancecompany = models.ForeignKey(
-        InsuranceCompany, on_delete=models.CASCADE)
+        InsuranceCompany, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=10)
     governorate = models.ForeignKey(
-        Governorate, on_delete=models.CASCADE)
+        Governorate, on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     rate = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)
-
+    profile_picture = models.ImageField(
+        upload_to='medical_phacilities/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']
@@ -190,16 +211,19 @@ class Nurse(models.Model):
     lastname = models.CharField(max_length=200)
     gender = models.CharField(max_length=1, null=True)
     insurancecompany = models.ForeignKey(
-        InsuranceCompany, on_delete=models.CASCADE)
+        InsuranceCompany, on_delete=models.SET_NULL, null=True, blank=True)
     phone_number = models.CharField(max_length=10)
     governorate = models.ForeignKey(
-        Governorate, on_delete=models.CASCADE)
+        Governorate, on_delete=models.SET_NULL, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     rate = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)
-
+    profile_picture = models.ImageField(
+        upload_to='nurses/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']

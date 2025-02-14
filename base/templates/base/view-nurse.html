@@ -133,10 +133,10 @@
                                         <td>{{ nurse.governorate }}</td>
                                         <td>-</td>
                                         <td>
-                                            <a href="#" class="btn btn-info btn-circle btn-sm info ">
+                                            <a href="{% url 'nurse_details' nurse.id %}" class="btn btn-info btn-circle btn-sm info ">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
-                                            <a href="#" class="btn btn-warning btn-circle btn-sm edit">
+                                            <a href="{% url 'editnurse' nurse.id %}" class="btn btn-warning btn-circle btn-sm edit">
                                                 <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-secondary btn-circle btn-sm delete" data-id="{{ nurse.id }}">

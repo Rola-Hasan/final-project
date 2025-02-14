@@ -1,0 +1,82 @@
+{% extends "main.html" %}
+{% block title %}
+الممرض {{ nurse.firstname }} {{ nurse.lastname }}
+{% endblock title %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+<div id="wrapper">
+    {% include "sidebar.html" %}
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            {% include "topbar.html" %}
+            <div class="container-fluid mt-8">
+
+                <!-- Page Heading -->
+                <h2 class="h3 mb-2 text-gray-800">تفاصيل أخرى</h2>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>العنوان </th>
+
+                                        <th>رقم الهاتف</th>
+                                        <th>الصورة </th>
+                                        <th>الوصف</th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>{{ nurse.address }}</td>
+                                        <td>
+                                            {{ nurse.phone_number }}
+                                        </td>
+
+                                        <td>
+                                            {% if nurse.profile_picture and nurse.profile_picture.url %}
+                                            <img src="{{ nurse.profile_picture.url }}"
+                                                class="img-fluid rounded-circle" alt="Profile Picture" width="40px">
+                                            {% else %}
+                                            لا يوجد
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {{ nurse.description }}
+                                        </td>
+
+                                    </tr>
+
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

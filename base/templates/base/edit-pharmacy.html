@@ -1,0 +1,128 @@
+{% extends "main.html" %}
+
+{% block title %}تعديل معلومات الصيدلية {% endblock title %}
+
+{% block content %}
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        {% include "sidebar.html" %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                {% include "topbar.html" %}
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">تعديل معلومات صيدلية {{ pharmacy.name }}</h1>
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- First Name and Last Name -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form6Example1">اسم الصيدلية</label>
+                                            <input type="text" name="pharmacy_name" id="form6Example1"
+                                                class="form-control" value="{{ pharmacy.name }}" required />
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="governorate">المحافظة</label>
+                                        <select class="form-select form-control" name="governorate" required>
+                                            <option value="{{pharmacy.governorate.id}}" selected>{{ pharmacy.governorate.name }}</option>
+                                            {% for governorate in governorates %}
+                                            {% if governorate.id != pharmacy.governorate.id %}
+                                        
+                                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+
+                                <!-- Gender and Specialization -->
+
+
+                                <!-- Insurance Company and Phone Number -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                    <label class="form-label" for="insurance_company">شركة التأمين</label>
+                                    <select class="form-select form-control" name="insurance_company" required>
+                                        <option value="{{pharmacy.insurancecompany.id}}" selected>{{ pharmacy.insurancecompany.name }}</option>
+                                        <option value="">لا يوجد</option>
+                                        {% for company in insurance_companies %}
+                                        {% if company.id != pharmacy.insurancecompany.id %}
+                                    
+                                        <option value="{{ company.id }}">{{ company.name }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="phone">رقم الهاتف</label>
+                                            <input type="text" name="phone" id="phone" class="form-control" value="{{ pharmacy.phone_number }}" required />
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Governorate and Address -->
+                                <div class="row mb-4">
+
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="address">العنوان</label>
+                                            <textarea class="form-control" name="address" id="address" rows="3"
+                                                required>{{ pharmacy.address }}</textarea>
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="picture">الصورة الشخصية</label>
+                                            <input type="file" name="picture" id="picture" class="form-control" value="{{ pharmacy.profile_picture.url }}" />
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="address">الوصف</label>
+                                            <textarea class="form-control" name="description" id="address"
+                                                rows="3" >{{ pharmacy.description }}</textarea>
+                                          
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                                <!-- Submit Button -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12 text-center">
+                                        <input type="submit" class="btn btn-primary mb-4" value="تعديل">
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                        <!-- End of Main Content -->
+
+
+                        {% endblock content %}

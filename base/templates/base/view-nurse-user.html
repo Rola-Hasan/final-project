@@ -109,6 +109,7 @@
                                         <th>شركة التأمين</th>
                                         <th>المحافظة</th>
                                         <th>التقييم</th>
+                                        <th></th>
                                         
                                     </tr>
                                 </thead>
@@ -132,6 +133,9 @@
                                         <td>{{ nurse.insurancecompany }}</td>
                                         <td>{{ nurse.governorate }}</td>
                                         <td>-</td>
+                                        <td><a href="{% url 'nurse_details' nurse.id %}" class="btn btn-info btn-circle btn-sm info ">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a></td>
                                         
                                     </tr>
                                     {% endfor %}

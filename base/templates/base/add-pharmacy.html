@@ -22,7 +22,7 @@
                     <div class="card shadow mb-4">
 
                         <div class="card-body">
-                            <form method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
 
                                 <!-- First Name and Last Name -->
@@ -50,7 +50,9 @@
                                 <!-- Insurance Company and Phone Number -->
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <select class="form-select form-control" name="insurance" required>
+                                       
+                                        <select class="form-select form-control" name="insurance" >
+                                            <option value="">لا يوجد</option>
                                             {% for insurance in insurance_companies %}
                                             <option value="{{ insurance.id }}">{{ insurance.name }}</option>
                                             {% endfor %}
@@ -74,15 +76,27 @@
                                                 required></textarea>
                                             <label class="form-label" for="address">العنوان</label>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-outline">
-                                            <textarea class="form-control" name="description" id="address" rows="3"
-                                             ></textarea>
-                                            <label class="form-label" for="address">ملاحظات</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-outline">
+                                                <input type="file" name="picture" id="picture" class="form-control" />
+                                                <label class="form-label" for="picture">الصورة الشخصية</label>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <textarea class="form-control" name="description" id="address" rows="3"></textarea>
+                                            <label class="form-label" for="address">الوصف</label>
+                                        </div>
+                                    </div>
+                                    
+
                                 </div>
+
+                                   
+                                
 
                                 <!-- Submit Button -->
                                 <div class="row mb-4">

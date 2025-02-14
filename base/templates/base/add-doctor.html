@@ -18,7 +18,7 @@
                     <h1 class="h3 mb-2 text-gray-800">إضافة طبيب</h1>
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <form method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <!-- First Name and Last Name -->
                                 <div class="row mb-4">
@@ -76,7 +76,7 @@
                                 
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <select class="form-select form-control" name="insurance_company" required>
+                                        <select class="form-select form-control" name="insurance_company" >
                                             {% for company in insurance_companies %}
                                             <option value="{{ company.id }}">{{ company.name }}</option>
                                             {% endfor %}
@@ -92,12 +92,19 @@
                                 </div>
                                 
                                 <div class="row mb-4">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <input type="file" name="picture" id="picture" class="form-control" />
+                                            <label class="form-label" for="picture">الصورة الشخصية</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <div class="form-outline">
                                             <textarea name="description" id="description" class="form-control" rows="3"></textarea>
                                             <label class="form-label" for="description">الوصف</label>
                                         </div>
                                     </div>
+
                                 </div>
 
 

@@ -1,0 +1,94 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}
+من نحن
+{% endblock title %}
+
+{% block content %}
+<style>
+  :root {
+    --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --heading-font: "Nunito", sans-serif;
+    --nav-font: "Inter", sans-serif;
+    --default-color: #3d4348;
+    --heading-color: #3e5055;
+    --accent-color: #388da8;
+    --surface-color: #ffffff;
+    --contrast-color: #ffffff;
+    --nav-color: #313336;
+    --nav-hover-color: #77b6ca;
+    --nav-mobile-background-color: #ffffff;
+    --nav-dropdown-background-color: #ffffff;
+    --nav-dropdown-color: #313336;
+    --nav-dropdown-hover-color: #77b6ca;
+  }
+
+  body {
+    font-family: var(--default-font);
+  
+    /* لون أزرق باهت مع شفافية */
+    color: var(--default-color);
+  }
+
+  h1 {
+    font-family: var(--heading-font);
+    color: var(--heading-color);
+    font-size: 3rem;
+    /* تكبير حجم الخط */
+  }
+
+  .accent {
+    color: var(--accent-color);
+  }
+
+  .image {
+    width: 100%;
+    /* جعل الصورة تتناسب مع عرض الحاوية */
+    max-width: 500px;
+    /* تحديد الحد الأقصى لعرض الصورة إلى 500 بكسل */
+    height: auto;
+    /* الحفاظ على نسبة العرض إلى الارتفاع */
+  }
+
+  .inline-paragraph {
+    display: block;
+    /* جعل الفقرات في أسطر منفصلة */
+    margin-bottom: 15px;
+    /* إضافة مسافة بين الفقرات */
+    font-size: 1.25rem;
+    /* تكبير حجم الخط للفقرات */
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    background-color: rgba(244, 244, 244, 0.8);
+    /* لون خلفية الفوتر مع شفافية */
+    color: #666;
+    /* لون نص الفوتر */
+  }
+</style>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row items-center">
+    <div class="relative w-full md:w-1/2">
+      <img alt="ن" class="relative z-10 image" src="{% static 'img/picture1.png' %}" /> <!-- استخدام الفئة image لتحديد الأبعاد -->
+      <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+
+      </div>
+    </div>
+    <div class="w-full md:w-1/2 mt-8 md:mt-0 md:mr-8">
+      <h1 class="font-bold">من نحن</h1>
+      <div class="h-1 w-16 bg-blue-200 my-4"></div> <!-- تغيير اللون إلى أزرق باهت -->
+      <p class="mb-4 inline-paragraph">نحن هنا لتقديم معلومات دقيقة وموثوقة حول الأطباء والمراكز الصحية.</p>
+      <p class="font-bold mb-4 inline-paragraph">هدفنا هو تسهيل الوصول إلى الخدمات الطبية المناسبة.</p>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+

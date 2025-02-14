@@ -105,10 +105,11 @@ View Users
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th>الاسم</th>
                                         <th>اسم المستخدم</th>
                                         
                                         <th>نوع المستخدم</th>
-                                        <th>صورة المستخدم</th>
+                                        
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -116,6 +117,7 @@ View Users
                                     {% for userprofile in userprofiles %}
                                     <tr data-id="{{ userprofile.id }}" data-name="{{ userprofile.user.username }}" data-picture="{{ userprofile.profile_picture }}" data-role="userprofile.get_user_role()"
                                         >
+                                        <td>{{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</td>
                                         <td>{{ userprofile.user.username }}</td>
                                         {% if userprofile.get_user_role == "admin" %}
                                         <td>مدير</td>
@@ -124,23 +126,16 @@ View Users
                                         {% else %}
                                         <td>غير مسجل</td>
                                         {% endif %}
-                                        <td>
-                                            {% if userprofile.profile_picture %}
-                                            <img src="{{ userprofile.profile_picture.url }}" alt="Profile Picture" width="60px">
-                                            {% else %}
-                                            <img src="{% static 'images/default_profile.png' %}" alt="Default Picture" width="60px">
-                                            {% endif %}
-                                        </td>
+                                       
                                            <td>
-                                            <a href="#" class="btn btn-info btn-circle btn-sm info">
+                                            <a href="{% url 'user_details' userprofile.id %}" class="btn btn-info btn-circle btn-sm info">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
-                                            <a href="#" class="btn btn-warning btn-circle btn-sm edit"
-                                                data-toggle="modal" data-target="#editModal">
+                                            <a href="{% url 'edituser' userprofile.id %}" class="btn btn-warning btn-circle btn-sm edit">
                                                 <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-secondary btn-circle btn-sm delete"
-                                                data-id="{{ doctor.id }}">
+                                                data-id="{{userprofile.id }}">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
@@ -201,239 +196,69 @@ View Users
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
         const closeSuccessBtn = document.getElementById('closeSuccessBtn');
-        let doctorIdToDelete = null;  // Store the doctor ID to delete
-        let doctorRowToDelete = null; // Store the row of the doctor to delete
+        let userprofileIdToDelete = null;
+        let userprofileRowToDelete = null;
 
-        // Event listener for delete button
+        // Handle Delete Button Click
         document.querySelectorAll('.delete').forEach(button => {
             button.addEventListener('click', function (event) {
-                event.preventDefault(); // Prevent the default anchor click behavior
+                event.preventDefault();
 
-                // Get the doctor ID and store the row
-                doctorIdToDelete = this.getAttribute('data-id');
-                doctorRowToDelete = this.closest('tr');  // Get the closest table row
+                userprofileIdToDelete = this.getAttribute('data-id');
+                userprofileRowToDelete = this.closest('tr');
 
-                // Show the confirmation modal
                 confirmDeleteModal.style.display = 'block';
             });
         });
 
-        // Event listener for the "Delete" button in the confirmation modal
+        // Handle Confirm Delete
         confirmDeleteBtn.addEventListener('click', function () {
-            if (doctorIdToDelete) {
-                // Send a request to delete the doctor from the database
-                fetch(`/delete-doctor/${doctorIdToDelete}/`, {
-                    method: 'DELETE',
+            if (userprofileIdToDelete) {
+                fetch(`/delete-userprofile/${userprofileIdToDelete}/`, {
+                    method: 'POST',  // Use POST instead of DELETE
                     headers: {
-                        'X-CSRFToken': getCSRFToken(), // CSRF token from meta tag
+                        'X-CSRFToken': getCSRFToken(),
                         'Content-Type': 'application/json',
                     },
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Hide the confirmation modal
                             confirmDeleteModal.style.display = 'none';
-
-                            // Show the success modal
                             successDeleteModal.style.display = 'block';
 
-                            // Remove the row from the table immediately
-                            doctorRowToDelete.remove();
+                            if (userprofileRowToDelete) {
+                                userprofileRowToDelete.remove();
+                            }
                         } else {
-                            alert('Failed to delete the doctor. ' + data.error);
+                            alert('Failed to delete the user. ' + data.error);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('An error occurred.');
-                        // Hide the confirmation modal if error occurs
                         confirmDeleteModal.style.display = 'none';
                     });
             }
         });
 
-        // Event listener for the "Cancel" button in the confirmation modal
+        // Close Modals
         cancelDeleteBtn.addEventListener('click', function () {
-            // Simply hide the confirmation modal
             confirmDeleteModal.style.display = 'none';
         });
 
-        // Close the confirmation modal if the "Close" button is clicked
-        document.querySelector('.close').addEventListener('click', function () {
-            confirmDeleteModal.style.display = 'none';
-        });
-
-        // Close the success modal when "Close" is clicked
         closeSuccessBtn.addEventListener('click', function () {
-            // Hide the success modal
             successDeleteModal.style.display = 'none';
         });
-    });
 
-    // Helper function to get the CSRF token from the HTML document
-    function getCSRFToken() {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-        if (csrfToken) {
-            return csrfToken.getAttribute('content');
-        } else {
-            console.error('CSRF token not found');
-            return '';
+        // Get CSRF Token
+        function getCSRFToken() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            return csrfToken ? csrfToken.getAttribute('content') : '';
         }
-    }
-</script>
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form id="editForm">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">تعديل المعلومات</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="doctorId" name="doctorId">
-                    <div class="form-group">
-                        <label for="firstname">الاسم الأول</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">الاسم الأخير</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname">
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">الجنس</label>
-                        <select class="form-control" id="gender" name="gender">
-                            <option value="M">ذكر</option>
-                            <option value="F">أنثى</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="specialization">الاختصاص</label>
-                        <select class="form-control" id="specialization" name="specialization">
-                            {% for specialization in specializations %}
-                            <option value="{{ specialization.id }}">{{ specialization.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="insurancecompany">شركة التأمين</label>
-                        <select class="form-control" id="insurancecompany" name="insurancecompany">
-                            {% for insurance in insurancecompanies %}
-                            <option value="{{ insurance.id }}">{{ insurance.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="governorate">المحافظة</label>
-                        <select class="form-control" id="governorate" name="governorate">
-                            {% for governorate in governorates %}
-                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">تأكيد التعديل</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<!-- Table -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const editButtons = document.querySelectorAll(".edit");
-        const editForm = document.getElementById("editForm");
-
-        // Attach click event to all edit buttons
-        editButtons.forEach((button) => {
-            button.addEventListener("click", function () {
-                const row = this.closest("tr");
-
-                // Populate modal fields with existing data
-                document.getElementById("doctorId").value = row.getAttribute("data-id");
-                document.getElementById("firstname").value = row.getAttribute("data-firstname");
-                document.getElementById("lastname").value = row.getAttribute("data-lastname");
-                document.getElementById("gender").value = row.getAttribute("data-gender");
-                document.getElementById("specialization").value = row.getAttribute("data-specialization");
-                document.getElementById("insurancecompany").value = row.getAttribute("data-insurancecompany");
-                document.getElementById("governorate").value = row.getAttribute("data-governorate");
-
-                // Show the modal
-                $("#editModal").modal("show");
-            });
-        });
-
-        // Handle form submission
-        editForm.addEventListener("submit", function (e) {
-            e.preventDefault(); // Prevent the default form submission behavior
-
-            const doctorId = document.getElementById("doctorId").value;
-            const updatedData = {
-                firstname: document.getElementById("firstname").value,
-                lastname: document.getElementById("lastname").value,
-                gender: document.getElementById("gender").value,
-                specialization: document.getElementById("specialization").value,
-                insurancecompany: document.getElementById("insurancecompany").value,
-                governorate: document.getElementById("governorate").value,
-            };
-
-            // Send AJAX request to update the doctor data
-            fetch(`/update-doctor/${doctorId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedData),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to update data");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    if (data.success) {
-                        // Update table dynamically
-                        const row = document.querySelector(`tr[data-id="${doctorId}"]`);
-                        row.setAttribute("data-firstname", updatedData.firstname);
-                        row.setAttribute("data-lastname", updatedData.lastname);
-                        row.setAttribute("data-gender", updatedData.gender);
-                        row.setAttribute("data-specialization", updatedData.specialization);
-                        row.setAttribute("data-insurancecompany", updatedData.insurancecompany);
-                        row.setAttribute("data-governorate", updatedData.governorate);
-
-                        // Update displayed text in the table
-                        row.querySelector("td:nth-child(1)").textContent = updatedData.firstname;
-                        row.querySelector("td:nth-child(2)").textContent = updatedData.lastname;
-                        row.querySelector("td:nth-child(3)").textContent = updatedData.gender === "M" ? "ذكر" : "أنثى";
-
-                        // Hide the modal
-                        $("#editModal").modal("hide");
-                    } else {
-                        alert("حدث خطأ أثناء التعديل");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert("حدث خطأ أثناء الاتصال بالخادم");
-                });
-        });
     });
-
-
 </script>
 
 
 
-
-
-<!-- /.container-fluid -->
 {% endblock content %}

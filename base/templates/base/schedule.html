@@ -1,6 +1,6 @@
 {% extends "main.html" %}
 {% block title %}
-View Doctors
+الطبيب {{ doctor.firstname }} {{ doctor.lastname }}
 {% endblock title %}
 
 {% block content %}
@@ -88,12 +88,12 @@ View Doctors
 
         <!-- Main Content -->
         <div id="content">
-
+     
             {% include "topbar.html" %}
-            <div class="container-fluid">
+            <div class="container-fluid mt-8">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">جدول مواعيد د. {{ doctor.firstname }} {{ doctor.lastname }}</h1>
+                <h2 class="h3 mb-2 text-gray-800">تفاصيل أخرى</h2>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
@@ -103,53 +103,35 @@ View Doctors
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>اليوم</th>
-
-                                        <th>وقت البدء </th>
-                                        <th>وقت الانتهاء </th>
+                                        <th>العنوان </th>
                                         
-                                        <th></th>
+                                        <th>رقم الهاتف</th>
+                                        <th>الصورة الشخصية</th>
+                                        <th>الوصف</th>
+                                        
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for schedule in schedules %}
-                                <tr data-id="{{ schedule.id }}">
-                                    <td>{{ schedule.get_day_in_arabic }}</td>
+                                  
+                                <tr>
+                                    <td>{{ address }}</td>
                                     <td>
-                                        <span class="view-mode">{{ schedule.start_time }}</span>
-                                        <input type="time" class="edit-mode form-control d-none" value="{{ schedule.start_time }}">
+                                        {{ phone_number }}
                                     </td>
+                                   
+                                    <td>{% if doc_picture %}
+                                    <img src="{{ doctor.profile_picture.url }}" class="img-fluid rounded-circle" alt="Profile Picture" width="40px">
+                                        {% else %}
+                                        لا يوجد
+                                        {% endif %}</td>
                                     <td>
-                                        <span class="view-mode">{{ schedule.end_time }}</span>
-                                        <input type="time" class="edit-mode form-control d-none" value="{{ schedule.end_time }}">
+                                    {{ description }}
                                     </td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-circle btn-sm  info">
-                                            <i class="fas fa-info-circle"></i>
-                                        </a>
-                                       
-                                        <button class="btn btn-warning btn-circle btn-sm toggle-edit">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <a href="#" class="btn btn-secondary btn-circle btn-sm delete" data-id="{{ schedule.id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                        
-                                        <button class="btn btn-success btn-circle btn-sm save-edit d-none">
-                                            <i class="fas fa-save"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-circle btn-sm cancel-edit d-none">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </td>
+                                    
                                 </tr>
                                   
-                                {% empty %}
-                                <tr>
-                                    <td colspan="3">No schedules available for this doctor.</td>
-                                </tr>
-                                {% endfor %}
-                                       
+                                
                                   
                                 </tbody>
                             </table>
@@ -158,6 +140,59 @@ View Doctors
                     </div>
                 </div>
 
+            </div>
+            <div class="container-fluid mt-4">
+            
+                <!-- Page Heading -->
+                <h2 class="h3 mb-2 text-gray-800">جدول المواعيد  </h2>
+            
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+            
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>اليوم</th>
+            
+                                        <th>وقت البدء </th>
+                                        <th>وقت الانتهاء </th>
+            
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for schedule in schedules %}
+                                    <tr data-id="{{ schedule.id }}">
+                                        <td>{{ schedule.get_day_in_arabic }}</td>
+                                        <td>
+                                            <span class="view-mode">{{ schedule.start_time }}</span>
+                                            <input type="time" class="edit-mode form-control d-none"
+                                                value="{{ schedule.start_time }}">
+                                        </td>
+                                        <td>
+                                            <span class="view-mode">{{ schedule.end_time }}</span>
+                                            <input type="time" class="edit-mode form-control d-none"
+                                                value="{{ schedule.end_time }}">
+                                        </td>
+                                      
+                                    </tr>
+            
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3">لا يوجد جدول مواعيد لهذا الطبيب</td>
+                                    </tr>
+                                    {% endfor %}
+            
+            
+                                </tbody>
+                            </table>
+            
+                        </div>
+                    </div>
+                </div>
+            
             </div>
 
 

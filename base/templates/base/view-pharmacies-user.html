@@ -109,6 +109,7 @@ View Doctors
                                         <th>رقم الهاتف</th>
                                         <th>العنوان</th>
                                         <th>التقييم</th>
+                                        <th></th>
                                         
                                     </tr>
                                 </thead>
@@ -132,6 +133,9 @@ View Doctors
                                         <td>{{ pharmacy.phone_number }}</td>
                                         <td>{{ pharmacy.address }}</td>
                                         <td>-</td>
+                                        <td><a href="{% url 'pharmacy_details' %}" class="btn btn-info btn-circle btn-sm info ">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a></td>
                                         
                                     </tr>
                                     {% endfor %}

@@ -1,0 +1,152 @@
+{% extends "master.html" %}
+
+{% block content %}
+<!-- Location Consent Modal -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="locationModalLabel">مشاركة موقعك</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                هل ترغب في مشاركة موقعك للعثور على المرافق الطبية القريبين منك؟
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا، شكرًا</button>
+                <button type="button" id="consentButton" class="btn btn-primary">نعم، سماح</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form to send location to backend -->
+<form id="locationForm" method="POST" action="{% url 'save_location' %}">
+    {% csrf_token %}
+    <input type="hidden" id="latitude" name="latitude">
+    <input type="hidden" id="longitude" name="longitude">
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var locationStored = "{{ request.session.location_shared|default:'false'|escapejs }}";
+        var locationModal = new bootstrap.Modal(document.getElementById('locationModal'));
+
+        if (locationStored === "false") {
+            locationModal.show(); // Show modal only if location is not stored
+        }
+
+        document.getElementById('consentButton').addEventListener('click', function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+
+                    // Submit form to save location
+                    document.getElementById('locationForm').submit();
+                }, function (error) {
+                    alert("لم نتمكن من الحصول على موقعك. يرجى السماح بالوصول إلى الموقع.");
+                });
+            } else {
+                alert("متصفحك لا يدعم تحديد الموقع الجغرافي.");
+            }
+        });
+    });
+</script>
+
+<main class="main">
+    <!-- Hero Section -->
+    <section class="testimonials-section swiper-container">
+        <div class="swiper-wrapper">
+            {% for item in nearest_medical_facilities %}
+            <div class="swiper-slide">
+                <div class="testimonial-item">
+                    <img src="{{ item.facility.profile_picture.url }}" alt="Facility Image" class="testimonial-image" />
+                    <h3 class="testimonial-title">{{ item.facility.name }}</h3>
+                    <p class="testimonial-description">{{ item.facility.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</main>
+
+<!-- SwiperJS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+<script>
+  var swiper = new Swiper('.swiper-container', {
+        loop: true,  // Enables infinite loop of slides
+        slidesPerView: 'auto',  // Adjusts the number of slides visible based on container size
+        spaceBetween: 20, // Adjust the space between slides
+        autoplay: {
+            delay: 3000, // Adjust auto-play delay
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination', // Optional: add pagination if needed
+            clickable: true,
+        },
+    });
+
+</script>
+
+<style>
+    .testimonials-section {
+  width: 100%;
+  padding: 50px 0;
+}
+
+.swiper-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.swiper-wrapper {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+
+.swiper-slide {
+  width: 100%;
+  padding: 0 15px; /* Adjust to your preference */
+}
+
+.testimonial-item {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.testimonial-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.testimonial-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.testimonial-description {
+  font-size: 1em;
+  color: #777;
+}
+
+</style>
+
+{% endblock %}

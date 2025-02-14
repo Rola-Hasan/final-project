@@ -1,0 +1,155 @@
+{% extends "main.html" %}
+
+{% block title %}تعديل معلومات المستشفى{% endblock title %}
+
+{% block content %}
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        {% include "sidebar.html" %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                {% include "topbar.html" %}
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">تعديل معلومات مستشفى {{ medical_phacility.name }}</h1>
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- First Name and Last Name -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form6Example1">اسم المستشفى</label>
+                                            <input type="text" name="medical_phacility_name" id="form6Example1"
+                                                class="form-control" value="{{ medical_phacility.name }}" required />
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="governorate">المحافظة</label>
+                                        <select class="form-select form-control" name="governorate" required>
+                                            <option value="{{medical_phacility.governorate.id}}" selected>{{ medical_phacility.governorate.name }}</option>
+                                            {% for governorate in governorates %}
+                                            {% if governorate.id != medical_phacility.governorate.id %}
+                                            
+                                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+
+                                <!-- Gender and Specialization -->
+
+
+                                <!-- Insurance Company and Phone Number -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="specialization">النوع</label>
+                                        <select class="form-select form-control" name="type" required>
+                                            <option value="{{medical_phacility.type.id}}" selected>{{ medical_phacility.type.name }}</option>
+                                            {% for medicaltype in medicaltypes %}
+                                            {% if medicaltype.id != medical_phacility.type.id %}
+                                            
+                                            <option value="{{ medicaltype.id }}">{{ medicaltype.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
+                                        
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="specialization">الاختصاص</label>
+                                        <select class="form-select form-control" name="specialization" required>
+                                            <option value="{{ medical_phacility.specialization.id }}" selected>
+                                                {{ medical_phacility.specialization.name }}
+                                            </option>
+                                            {% for specialization in specializations %}
+                                            {% if specialization.id != medical_phacility.specialization.id %}
+                                            <option value="{{ specialization.id }}">{{ specialization.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                       
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="insurance_company">شركة التأمين</label>
+                                        <select class="form-select form-control" name="insurance_company" required>
+                                            <option value="{{medical_phacility.insurancecompany.id}}" selected>{{ medical_phacility.insurancecompany.name }}</option>
+                                            {% for company in insurance_companies %}
+                                            {% if company.id != medical_phacility.insurancecompany.id %}
+                                        
+                                            <option value="{{ company.id }}">{{ company.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="phone">رقم الهاتف</label>
+                                            <input type="text" name="phone" id="phone" class="form-control" value="{{ medical_phacility.phone_number }}" required />
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Governorate and Address -->
+                                <div class="row mb-4">
+
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="address">العنوان</label>
+                                            <textarea class="form-control" name="address" id="address" rows="3"
+                                                required>{{ medical_phacility.address }}</textarea>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="picture">الصورة الشخصية</label>
+                                            <input type="file" name="picture" id="picture" class="form-control" />
+                                           
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-outline">
+                                            <label class="form-label" for="address">الوصف</label>
+                                            <textarea class="form-control" name="description" id="address"
+                                                rows="3">{{ medical_phacility.description }}</textarea>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12 text-center">
+                                        <input type="submit" class="btn btn-primary mb-4" value="تعديل">
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                        <!-- End of Main Content -->
+
+
+                        {% endblock content %}

@@ -1,0 +1,145 @@
+{% extends "main.html" %}
+
+{% block title %} تعديل ممرض{% endblock title %}
+
+{% block content %}
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        {% include "sidebar.html" %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                {% include "topbar.html" %}
+                <div class="container-fluid">
+                    <h1 class="h3 mb-2 text-gray-800">الممرض {{ nurse.firstname }} {{ nurse.lastname }}</h1>
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- First Name and Last Name -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="form6Example1">الاسم الأول</label>
+                                        <div class="form-outline">
+                                            <input type="text" name="fname" id="form6Example1" class="form-control" value="{{ nurse.firstname }}"
+                                                required />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="form6Example2">الاسم الأخير</label>
+                                        <div class="form-outline">
+                                            <input type="text" name="lname" id="form6Example2" class="form-control" value="{{ nurse.lastname }}"
+                                                required />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gender and Specialization -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="gender">الجنس</label>
+                                        <select class="form-select form-control" name="gender" required>
+                                            {% if nurse.gender == "M" %}
+                                            <option value="M">ذكر</option>
+                                            <option value="F">أنثى</option>
+                                            {% else %}
+                                            <option value="F">أنثى</option>
+                                            <option value="M">ذكر</option>
+                                            {% endif %}
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="governorate">المحافظة</label>
+                                        <select class="form-select form-control" name="governorate" required>
+                                            <option value="{{nurse.governorate.id}}" selected>{{ nurse.governorate.name }}</option>
+                                            {% for governorate in governorates %}
+                                            {% if governorate.id != nurse.governorate.id %}
+                                            
+                                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <!-- Insurance Company and Phone Number -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="insurance">شركة التأمين</label>
+                                        <select class="form-select form-control" name="insurance" required>
+                                            <option value="{{nurse.insurancecompany.id}}" selected>{{ nurse.insurancecompany.name }}</option>
+                                            {% for company in insurance_companies %}
+                                            {% if company.id != nurse.insurancecompany.id %}
+                                            
+                                            <option value="{{ company.id }}">{{ company.name }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="phone">رقم الهاتف</label>
+                                        <div class="form-outline">
+                                            <input type="text" name="phone" id="phone" class="form-control" value="{{ nurse.phone_number }}" required />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Governorate and Address -->
+                                <div class="row mb-4">
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="address">العنوان</label>
+                                        <div class="form-outline">
+                                            <textarea class="form-control" name="address" id="address" rows="3" 
+                                                required>{{ nurse.address }}</textarea>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="picture">الصورة الشخصية</label>
+                                        <div class="form-outline">
+                                            <input type="file" name="picture" id="picture" class="form-control" />
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="address">الوصف</label>
+                                        <div class="form-outline">
+                                            <textarea class="form-control" name="description" id="address"
+                                                rows="3">{{ nurse.description }}</textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Submit Button -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12 text-center">
+                                        <input type="submit" class="btn btn-primary mb-4" value="تعديل">
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+                        <!-- End of Main Content -->
+
+
+                        {% endblock content %}

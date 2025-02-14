@@ -109,6 +109,7 @@
                             <th>الاختصاص</th>
                             <th>شركة التأمين</th>
                             <th>المحافظة</th>
+                           
                             <th>التقييم</th>
                             <th></th>
                         </tr>
@@ -131,12 +132,13 @@
                         <td>{{ doctor.specialization.name }}</td>
                         <td>{{ doctor.insurancecompany.name }}</td>
                         <td>{{ doctor.governorate.name }}</td>
+                       
                         <td>-</td>
                         <td>
                                 <a href="{% url 'doctor_schedule' doctor.id %}" class="btn btn-info btn-circle btn-sm info">
                                     <i class="fas fa-info-circle"></i>
                                 </a>
-                                <a href="#" class="btn btn-warning btn-circle btn-sm edit" data-toggle="modal" data-target="#editModal">
+                                <a href="{% url 'editdoctor' doctor.id %}" class="btn btn-warning btn-circle btn-sm edit">
                                     <i class="fas fa-pen"></i>
                                 </a>
                                 <a href="#" class="btn btn-secondary btn-circle btn-sm delete" data-id="{{ doctor.id }}">
@@ -281,154 +283,8 @@
         }
     }
 </script>
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form id="editForm">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">تعديل المعلومات</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="doctorId" name="doctorId">
-                    <div class="form-group">
-                        <label for="firstname">الاسم الأول</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname" >
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">الاسم الأخير</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname" >
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">الجنس</label>
-                        <select class="form-control" id="gender" name="gender" >
-                            <option value="M">ذكر</option>
-                            <option value="F">أنثى</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="specialization">الاختصاص</label>
-                        <select class="form-control" id="specialization" name="specialization" >
-                            {% for specialization in specializations %}
-                            <option value="{{ specialization.id }}">{{ specialization.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="insurancecompany">شركة التأمين</label>
-                        <select class="form-control" id="insurancecompany" name="insurancecompany" >
-                            {% for insurance in insurancecompanies %}
-                            <option value="{{ insurance.id }}">{{ insurance.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="governorate">المحافظة</label>
-                        <select class="form-control" id="governorate" name="governorate" >
-                            {% for governorate in governorates %}
-                            <option value="{{ governorate.id }}">{{ governorate.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">تأكيد التعديل</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
-<!-- Table -->
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-        const editButtons = document.querySelectorAll(".edit");
-        const editForm = document.getElementById("editForm");
-
-        // Attach click event to all edit buttons
-        editButtons.forEach((button) => {
-            button.addEventListener("click", function () {
-                const row = this.closest("tr");
-
-                // Populate modal fields with existing data
-                document.getElementById("doctorId").value = row.getAttribute("data-id");
-                document.getElementById("firstname").value = row.getAttribute("data-firstname");
-                document.getElementById("lastname").value = row.getAttribute("data-lastname");
-                document.getElementById("gender").value = row.getAttribute("data-gender");
-                document.getElementById("specialization").value = row.getAttribute("data-specialization");
-                document.getElementById("insurancecompany").value = row.getAttribute("data-insurancecompany");
-                document.getElementById("governorate").value = row.getAttribute("data-governorate");
-
-                // Show the modal
-                $("#editModal").modal("show");
-            });
-        });
-
-        // Handle form submission
-        editForm.addEventListener("submit", function (e) {
-            e.preventDefault(); // Prevent the default form submission behavior
-
-            const doctorId = document.getElementById("doctorId").value;
-            const updatedData = {
-                firstname: document.getElementById("firstname").value,
-                lastname: document.getElementById("lastname").value,
-                gender: document.getElementById("gender").value,
-                specialization: document.getElementById("specialization").value,
-                insurancecompany: document.getElementById("insurancecompany").value,
-                governorate: document.getElementById("governorate").value,
-            };
-
-            // Send AJAX request to update the doctor data
-            fetch(`/update-doctor/${doctorId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedData),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to update data");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    if (data.success) {
-                        // Update table dynamically
-                        const row = document.querySelector(`tr[data-id="${doctorId}"]`);
-                        row.setAttribute("data-firstname", updatedData.firstname);
-                        row.setAttribute("data-lastname", updatedData.lastname);
-                        row.setAttribute("data-gender", updatedData.gender);
-                        row.setAttribute("data-specialization", updatedData.specialization);
-                        row.setAttribute("data-insurancecompany", updatedData.insurancecompany);
-                        row.setAttribute("data-governorate", updatedData.governorate);
-
-                        // Update displayed text in the table
-                        row.querySelector("td:nth-child(1)").textContent = updatedData.firstname;
-                        row.querySelector("td:nth-child(2)").textContent = updatedData.lastname;
-                        row.querySelector("td:nth-child(3)").textContent = updatedData.gender === "M" ? "ذكر" : "أنثى";
-
-                        // Hide the modal
-                        $("#editModal").modal("hide");
-                    } else {
-                        alert("حدث خطأ أثناء التعديل");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    alert("حدث خطأ أثناء الاتصال بالخادم");
-                });
-        });
-    });
-
-
-</script>
 
 
 
